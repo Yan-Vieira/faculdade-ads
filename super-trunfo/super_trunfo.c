@@ -8,6 +8,8 @@ struct Carta {
         float area;
         float pib;
         int pontosTuristicos;
+        float densidadePopulacional;
+        float pibPerCapita;
 };
 
 struct Carta scanCadastrarCarta();
@@ -65,6 +67,9 @@ struct Carta scanCadastrarCarta() {
     printf("Pontos turisticos: ");
     scanf("%i", &novaCarta.pontosTuristicos);
 
+    novaCarta.densidadePopulacional = novaCarta.populacao / novaCarta.area;
+    novaCarta.pibPerCapita = novaCarta.pib / novaCarta.populacao;
+
     return novaCarta;
 }
 
@@ -79,4 +84,6 @@ void imprimirCarta(struct Carta *carta) {
     printf("Area: %.2f km²\n", carta->area);
     printf("PIB: R$ %.2f\n", carta->pib);
     printf("Pontos turisticos: %i\n", carta->pontosTuristicos);
+    printf("Densidade populacional: %.2f hab/km²\n", carta->densidadePopulacional);
+    printf("PIB per capita: R$ %.2f\n", carta->pibPerCapita);
 }
