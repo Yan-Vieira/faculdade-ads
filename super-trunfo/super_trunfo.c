@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+/**
+ * Representa uma carta do super trunfo. Guarda todos os atributos de uma carta.
+ */
 struct Carta {
         char estado;
         char codigo[4];
@@ -13,19 +16,52 @@ struct Carta {
         double superPoder;
 };
 
+/**
+ * Cria uma nova carta, cujos atributos recebem os valores que o usuário digitar no console.
+ * @returns a carta criada com os atributos que o usuário digitou no console.
+ */
 struct Carta scanCadastrarCarta();
+
+/**
+ * Imprime no console os valores de dada carta.
+ * @param carta a carta que será impressa no console.
+ */
 void imprimirCarta(struct Carta *carta);
 
+/**
+ * Compara todos os atributos numéricos de duas cartas e decide qual é a vencedora da comparação.
+ * 
+ * Dados dois atributos de mesmo nome e tipo, vence o atributo cujo valor for maior (exceto `densidadePopulacional`, onde vence qual valor for menor). Se o valor dos dois for igual, um empate é declarado.
+ * 
+ * Vence a carta que tiver mais atributos com valores maiores que o adversário (exceto `densidadePopulacional`, onde vence qual valor for menor).
+ * 
+ * Se as duas cartas acumularem a mesma pontuação ao final da comparação, um empate é declarado.
+ */
 void batalhaDeCartas(struct Carta *carta1, struct Carta *carta2);
 
+/**
+ * Compara dois vaores cujo tipo é `unsigned long`. Vence o valor que for maior.
+ */
 void compararAtributosUnsignedLong(const char *nomeAtributo, unsigned long *atributo1, short *pontuacaoAtributo1, unsigned long *atributo2, short *pontuacaoAtributo2);
 
+/**
+ * Compara dois valores cujo tipo é `float`. Vence o valor que for maior.
+ */
 void compararAtributosFloat(const char *nomeAtributo, float *atributo1, short *pontuacaoAtributo1, float *atributo2, short *pontuacaoAtributo2);
 
+/**
+ * Compara dois valores cujo tipo é `int`. Vence o valor que for maior.
+ */
 void compararAtributosInt(const char *nomeAtributo, int *atributo1, short *pontuacaoAtributo1, int *atributo2, short *pontuacaoAtributo2);
 
+/**
+ * Compara dois valores de densidade populacional. Vence o valor que for menor.
+ */
 void compararDensidadePopulacional(float *densidade1, short *pontuacaoDensidade1, float *densidade2, short *pontuacaoDensidade2);
 
+/**
+ * Compara dois valores cujo tipo é `double`. Vence o valor que for maior.
+ */
 void compararAtributosDouble(const char *nomeAtributo, double *atributo1, short *pontuacaoAtributo1, double *atributo2, short *pontuacaoAtributo2);
 
 int main() {
