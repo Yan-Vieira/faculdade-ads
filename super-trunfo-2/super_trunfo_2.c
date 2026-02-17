@@ -23,45 +23,54 @@ void imprimirCarta(struct Carta *carta);
 
 /**
  * Exibe o menu interativo para escolha do atributo a ser comparado/exibido.
+ * @returns 0 se a função foi executado com sucesso, ou 1 se ela foi executada com erro.
  */
-void menuInterativo(struct Carta *carta1, short *pontuacao1, struct Carta *carta2, short *pontuacao2);
-
-/**
- * Compara dois vaores cujo tipo é `unsigned long`. Vence o valor que for maior.
- */
-void compararAtributosUnsignedLong(const char *nomeAtributo, char *nomeCarta1, unsigned long *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, unsigned long *atributo2, short *pontuacaoAtributo2);
+int menuInterativo(struct Carta *carta1, double *pontuacao1, struct Carta *carta2, double *pontuacao2);
 
 /**
  * Compara dois valores cujo tipo é `float`. Vence o valor que for maior.
  */
-void compararAtributosFloat(const char *nomeAtributo, char *nomeCarta1, float *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, float *atributo2, short *pontuacaoAtributo2);
+void compararAtributosFloat(const char *nomeAtributo, char *nomeCarta1, float *atributo1, char *nomeCarta2, float *atributo2);
 
 /**
  * Compara dois valores cujo tipo é `int`. Vence o valor que for maior.
  */
-void compararAtributosInt(const char *nomeAtributo, char *nomeCarta1, int *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, int *atributo2, short *pontuacaoAtributo2);
+void compararAtributosInt(const char *nomeAtributo, char *nomeCarta1, int *atributo1, char *nomeCarta2, int *atributo2);
 
 /**
  * Compara dois valores de densidade demográfica. Vence o valor que for menor.
  */
-void compararDensidadeDemografica(char *nomeCarta1, float *densidade1, short *pontuacaoDensidade1, char *nomeCarta2, float *densidade2, short *pontuacaoDensidade2);
-
-/**
- * Compara dois valores cujo tipo é `double`. Vence o valor que for maior.
- */
-void compararAtributosDouble(const char *nomeAtributo, char *nomeCarta1, double *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, double *atributo2, short *pontuacaoAtributo2);
+void compararDensidadeDemografica(char *nomeCarta1, float *atributo1, char *nomeCarta2, float *atributo2);
 
 int main() {
 
-    short pontuacaoCarta1 = 0;
-    short pontuacaoCarta2 = 0;
+    double pontuacaoCarta1 = 0;
+    double pontuacaoCarta2 = 0;
 
     struct Carta carta1 = scanCadastrarCarta();
     struct Carta carta2 = scanCadastrarCarta();
 
-    printf("\n\n---CARTAS---\n\n");
+    int menuInterativoSucesso = menuInterativo(&carta1, &pontuacaoCarta1, &carta2, &pontuacaoCarta2);
 
-    menuInterativo(&carta1, &pontuacaoCarta1, &carta2, &pontuacaoCarta2);
+    if (menuInterativoSucesso != 0) return 0;
+
+    printf("\n\n---PONTUACOES TOTAIS---\n\n");
+
+    printf("%s: %.2f\n\n", carta1.nome, pontuacaoCarta1);
+    printf("%s: %.2f\n", carta2.nome, pontuacaoCarta2);
+
+    if (pontuacaoCarta1 > pontuacaoCarta2) {
+
+      printf("\n\n%s venceu a batalha!", carta1.nome);
+
+    } else if (pontuacaoCarta2 > pontuacaoCarta1) {
+
+      printf("\n\n%s venceu a batalha!", carta2.nome);
+
+    } else {
+
+      printf("\n\nempate!");
+    }
     
     return 0;
 }
@@ -117,9 +126,10 @@ void imprimirCarta(struct Carta *carta) {
     // printf("Super poder: %.2f\n", carta->superPoder);
 }
 
-void menuInterativo(struct Carta *carta1, short *pontuacao1, struct Carta *carta2, short *pontuacao2) {
+int menuInterativo(struct Carta *carta1, double *pontuacao1, struct Carta *carta2, double *pontuacao2) {
 
-  int opcao;
+  int opcao1;
+  int opcao2;
 
   printf("\n\n---MENU---\n\n");
 
@@ -132,79 +142,104 @@ void menuInterativo(struct Carta *carta1, short *pontuacao1, struct Carta *carta
   printf("5. Pontos turisticos\n");
   printf("6. Densidade demografica\n");
 
-  printf("\n\nDigite uma opção (apenas o número): ");
-  scanf("%i", &opcao);
+  printf("\n\nDigite uma opcao (apenas o número): ");
+  scanf("%i", &opcao1);
 
-  switch (opcao) {
+  if (opcao1 != 1) {
+
+    printf("\n\nDigite o segundo atributo (apenas o número): ");
+    scanf("%i", &opcao2);
+  }
+
+  if (opcao1 == opcao2) {
+    
+    printf("\n\nPor favor, escolha duas opcoes diferentes");
+
+    return 1;
+  }
+  
+
+  switch (opcao1) {
     case 1:
       printf("\n");
       printf("Nome da carta 1: %s\n", carta1->nome);
       printf("Nome da carta 2: %s\n", carta2->nome);
-      break;
-    case 2:
-      compararAtributosInt("Populacao", carta1->nome, &carta1->populacao, pontuacao1, carta2->nome, &carta2->populacao, pontuacao2);
+      return 1;
+     case 2:
+      compararAtributosInt("Populacao", carta1->nome, &carta1->populacao, carta2->nome, &carta2->populacao);
+      (*pontuacao1) += carta1->populacao;
+      (*pontuacao2) += carta2->populacao;
       break;
     case 3:
-      compararAtributosFloat("Area", carta1->nome, &carta1->area, pontuacao1, carta2->nome, &carta2->area, pontuacao2);
+      compararAtributosFloat("Area", carta1->nome, &carta1->area, carta2->nome, &carta2->area);
+      (*pontuacao1) += carta1->area;
+      (*pontuacao2) += carta2->area;
       break;
     case 4:
-      compararAtributosFloat("PIB", carta1->nome, &carta1->pib, pontuacao1, carta2->nome, &carta2->pib, pontuacao2);
+      compararAtributosFloat("PIB", carta1->nome, &carta1->pib, carta2->nome, &carta2->pib);
+      (*pontuacao1) += carta1->pib;
+      (*pontuacao2) += carta2->pib;
       break;
     case 5:
-      compararAtributosInt("Pontos turisticos", carta1->nome, &carta1->pontosTuristicos, pontuacao1, carta2->nome, &carta2->pontosTuristicos, pontuacao2);
+      compararAtributosInt("Pontos turisticos", carta1->nome, &carta1->pontosTuristicos, carta2->nome, &carta2->pontosTuristicos);
+      (*pontuacao1) += carta1->pontosTuristicos;
+      (*pontuacao2) += carta2->pontosTuristicos;
       break;
     case 6:
-      compararDensidadeDemografica(carta1->nome, &carta1->densidadeDemografica, pontuacao1, carta2->nome, &carta2->densidadeDemografica, pontuacao2);
+      compararDensidadeDemografica(carta1->nome, &carta1->densidadeDemografica, carta2->nome, &carta2->densidadeDemografica);
+      (*pontuacao1) -= carta1->densidadeDemografica;
+      (*pontuacao2) -= carta2->densidadeDemografica;
       break;
     default:
       printf("Por favor, digite uma opção válida. Por exemplo, 1 para exibir o nome das cartas");
-      menuInterativo(carta1, pontuacao1, carta2, pontuacao2);
+      return 1;
+  }
+
+  switch (opcao2) {
+    case 2:
+      compararAtributosInt("Populacao", carta1->nome, &carta1->populacao, carta2->nome, &carta2->populacao);
+      (*pontuacao1) += carta1->populacao;
+      (*pontuacao2) += carta2->populacao;
       break;
+    case 3:
+      compararAtributosFloat("Area", carta1->nome, &carta1->area, carta2->nome, &carta2->area);
+      (*pontuacao1) += carta1->area;
+      (*pontuacao2) += carta2->area;
+      break;
+    case 4:
+      compararAtributosFloat("PIB", carta1->nome, &carta1->pib, carta2->nome, &carta2->pib);
+      (*pontuacao1) += carta1->pib;
+      (*pontuacao2) += carta2->pib;
+      break;
+    case 5:
+      compararAtributosInt("Pontos turisticos", carta1->nome, &carta1->pontosTuristicos, carta2->nome, &carta2->pontosTuristicos);
+      (*pontuacao1) += carta1->pontosTuristicos;
+      (*pontuacao2) += carta2->pontosTuristicos;
+      break;
+    case 6:
+      compararDensidadeDemografica(carta1->nome, &carta1->densidadeDemografica, carta2->nome, &carta2->densidadeDemografica);
+      (*pontuacao1) -= carta1->densidadeDemografica;
+      (*pontuacao2) -= carta2->densidadeDemografica;
+      break;
+    default:
+      printf("Por favor, digite uma opção válida. Por exemplo, 2 para comparar as populacoes");
+      return 1;
   }
+
+  return 0;
 }
 
-void compararAtributosUnsignedLong(const char *nomeAtributo, char *nomeCarta1, unsigned long *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, unsigned long *atributo2, short *pontuacaoAtributo2) {
+void compararAtributosFloat(const char *nomeAtributo, char *nomeCarta1, float *atributo1, char *nomeCarta2, float *atributo2) {
 
-    printf("Atributo a ser comparado: %s\n\n", nomeAtributo);
+   printf("\n\nAtributo a ser comparado: %s\n\n", nomeAtributo);
 
-   printf("%s\n%s: %lu\n", nomeCarta1, nomeAtributo, *atributo1);
+   printf("%s\n%s: %.2f\n\n", nomeCarta1, nomeAtributo, *atributo1);
 
-   printf("%s\n%s: %lu\n", nomeCarta2, nomeAtributo, *atributo2);
+   printf("%s\n%s: %.2f\n\n", nomeCarta2, nomeAtributo, *atributo2);
 
   if (*atributo1 > *atributo2) {
 
     printf("%s venceu\n", nomeCarta1, nomeAtributo);
-
-    (*pontuacaoAtributo1)++;
-
-    return;
-  }
-  
-  if (*atributo2 > *atributo1) {
-
-    printf("%s venceu\n", nomeCarta2, nomeAtributo);
-
-    (*pontuacaoAtributo2)++;
-
-    return;
-  }
-
-  printf("empate\n", nomeAtributo);
-}
-
-void compararAtributosFloat(const char *nomeAtributo, char *nomeCarta1, float *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, float *atributo2, short *pontuacaoAtributo2) {
-
-   printf("Atributo a ser comparado: %s\n\n", nomeAtributo);
-
-   printf("%s\n%s: %.2f\n", nomeCarta1, nomeAtributo, *atributo1);
-
-   printf("%s\n%s: %.2f\n", nomeCarta2, nomeAtributo, *atributo2);
-
-  if (*atributo1 > *atributo2) {
-
-    printf("%s venceu\n", nomeCarta1, nomeAtributo);
-
-    (*pontuacaoAtributo1)++;
 
     return;
   }
@@ -213,17 +248,15 @@ void compararAtributosFloat(const char *nomeAtributo, char *nomeCarta1, float *a
 
     printf("%s venceu\n", nomeCarta2, nomeAtributo);
 
-    (*pontuacaoAtributo2)++;
-
     return;
   }
 
   printf("empate\n", nomeAtributo);
 }
 
-void compararAtributosInt(const char *nomeAtributo, char *nomeCarta1, int *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, int *atributo2, short *pontuacaoAtributo2) {
+void compararAtributosInt(const char *nomeAtributo, char *nomeCarta1, int *atributo1, char *nomeCarta2, int *atributo2) {
 
-  printf("Atributo a ser comparado: %s\n\n", nomeAtributo);
+  printf("\n\nAtributo a ser comparado: %s\n\n", nomeAtributo);
 
   printf("%s\n%s: %i\n\n", nomeCarta1, nomeAtributo, *atributo1);
 
@@ -233,8 +266,6 @@ void compararAtributosInt(const char *nomeAtributo, char *nomeCarta1, int *atrib
 
     printf("%s venceu\n", nomeCarta1, nomeAtributo);
 
-    (*pontuacaoAtributo1)++;
-
     return;
   }
 
@@ -242,50 +273,23 @@ void compararAtributosInt(const char *nomeAtributo, char *nomeCarta1, int *atrib
 
     printf("%s venceu\n", nomeCarta2, nomeAtributo);
 
-    (*pontuacaoAtributo2)++;
-
     return;
   }
 
   printf("empate\n", nomeAtributo);
 }
 
-void compararAtributosDouble(const char *nomeAtributo, char *nomeCarta1, double *atributo1, short *pontuacaoAtributo1, char *nomeCarta2, double *atributo2, short *pontuacaoAtributo2) {
+void compararDensidadeDemografica(char *nomeCarta1, float *densidade1, char *nomeCarta2, float *densidade2) {
 
-  if (*atributo1 > *atributo2) {
+   printf("\n\nAtributo a ser comparado: Densidade demografica\n\n");
 
-    printf("\n%s: %s venceu\n", nomeCarta1, nomeAtributo);
+   printf("%s\nDensidade demografica: %.2f\n\n", nomeCarta1, *densidade1);
 
-    (*pontuacaoAtributo1)++;
-
-    return;
-  }
-
-  if (*atributo2 > *atributo1) {
-
-    printf("\n%s: %s venceu\n", nomeCarta2, nomeAtributo);
-
-    (*pontuacaoAtributo2)++;
-
-    return;
-  }
-
-  printf("\n%s: empate\n", nomeAtributo);
-}
-
-void compararDensidadeDemografica(char *nomeCarta1, float *densidade1, short *pontuacaoDensidade1, char *nomeCarta2, float *densidade2, short *pontuacaoDensidade2) {
-
-   printf("Atributo a ser comparado: Densidade demografica\n\n");
-
-   printf("%s\nDensidade demografica: %.2f\n", nomeCarta1, *densidade1);
-
-   printf("%s\nDensidade demografica: %.2f\n", nomeCarta2, *densidade2);
+   printf("%s\nDensidade demografica: %.2f\n\n", nomeCarta2, *densidade2);
 
   if (*densidade1 < *densidade2) {
 
     printf("\nDensidade populacional: %s venceu\n", nomeCarta1);
-
-    (*pontuacaoDensidade1)++;
 
     return;
   }
@@ -293,8 +297,6 @@ void compararDensidadeDemografica(char *nomeCarta1, float *densidade1, short *po
   if (*densidade2 < *densidade1) {
 
     printf("\nDensidade populacional: %s venceu\n", nomeCarta2);
-
-    (*pontuacaoDensidade2)++;
 
     return;
   }
